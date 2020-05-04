@@ -11,11 +11,14 @@
         <li class="nav-item {{ location }}">
           <a class="nav-link" href="{% url 'trans19:locations' %}">Locations</a>
         </li>
-          <li class="nav-item {{ new }}">
+          <li class="nav-item">
             <a class="nav-link" href="{% url 'trans19:patient_new' %}">Add Patient</a>
         </li>
-          <li class="nav-item {{ new }}">
+          <li class="nav-item">
             <a class="nav-link" href="{% url 'trans19:location_new' %}">Add Location</a>
+        </li>
+          <li class="nav-item {{ connection }}">
+            <a class="nav-link" href="{% url 'trans19:connections' %}">Connections</a>
         </li>
       </ul>
     </div>

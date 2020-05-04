@@ -3,9 +3,10 @@ from django.urls import reverse_lazy
 from django.db import transaction
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
-
-from .models import Patient, Location
+from .models import Patient, Location, Visit
 from .forms import LocationForm, PatientForm, PatientFormSet
+
+from datetime import timedelta
 
 
 def index(request):
@@ -122,3 +123,28 @@ class PatientDelete(DeleteView):
     model = Patient
     template_name = 'trans19/deletePatient.html'
     success_url = reverse_lazy('trans19:patients')
+
+
+def connections(request):
+    patient_case = request.GET.get('case_number')
+    time_window = request.GET.get('time_window')
+    if time_window:
+        time_window = int(time_window)
+    context = {"patient": patient_case, "connection": "active"}
+    unfortunate_list = Visit.objects.none()
+    visit_list = Visit.objects.filter(patient__case_number=patient_case).values(
+        "location", "date_from", "date_to")
+    for v in visit_list:
+        unfortunate_list = unfortunate_list | Visit.objects.filter(
+            location=v["location"]).filter(date_from__range=(
+                v["date_from"] - timedelta(days=time_window),
+                v["date_to"] + timedelta(days=time_window))) | Visit.objects.filter(
+            location=v["location"]).filter(date_to__range=(
+                v["date_from"] - timedelta(days=time_window),
+                v["date_to"] + timedelta(days=time_window)))
+    context['potential_patient_list'] = unfortunate_list.exclude(patient__case_number=patient_case)
+    context['selected_patient'] = Patient.objects.filter(case_number=patient_case).values(
+        "patient_name", "date_case_confirmed", "case_number")
+    context['selected_patient_visit'] = Visit.objects.filter(patient__case_number=patient_case)
+
+    return render(request, 'trans19/connections.html', context)

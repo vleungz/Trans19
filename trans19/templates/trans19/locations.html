@@ -1,27 +1,33 @@
 {% extends "trans19/layouts/base.html" %}
 {% block content %}
     <h2 class="text-center mt-5">Location Record</h2>
-    <table>
+    <div class="table-responsive w-75 mx-auto mb-5">
+    <table class="table table-bordered mt-3">
+        <thead class="thead-light">
             <tr>
-                <th class="header">Locations</th>
+                <th class="header">Location</th>
                 <th class="header">Address</th>
                 <th class="header">District</th>
                 <th class="header">X Coord</th>
                 <th class="header">Y Coord</th>
                 <th class="header">Modify</th>
             </tr>
+        </thead>
+        <tbody>
             {% for location in latest_location_list %}
             <tr>
-                <th>{{ location }}</th>
-                <th>{{ location.address }}</th>
-                <th>{{ location.district }}</th>
-                <th>{{ location.x_coord }}</th>
-                <th>{{ location.y_coord }}</th>
-                <th>
+                <td>{{ location }}</td>
+                <td>{{ location.address }}</td>
+                <td>{{ location.district }}</td>
+                <td>{{ location.x_coord }}</td>
+                <td>{{ location.y_coord }}</td>
+                <td>
                     <a href="{% url 'trans19:location_edit' pk=location.pk %}">Edit</a>
                     <a href="{% url 'trans19:location_delete' pk=location.pk %}">Delete</a>
-                </th>
+                </td>
             </tr>
             {% endfor %}
+        </tbody>
     </table>
+    </div>
 {% endblock %}

@@ -33,5 +33,3 @@ class Visit(models.Model):
 
     def __str__(self):
         return self.location.location_name
-
-    # def get_connection(self):
