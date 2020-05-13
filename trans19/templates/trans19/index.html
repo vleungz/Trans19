@@ -3,5 +3,17 @@
     <div class="container mt-5">
         <h1 class="display-4">Trans-19</h1>
         <p class="lead pt-2 pl-2">A web application to keep track of the database of Covid-19 Patients at CHP</p>
+        <p class="lead pl-2">Total number of cases: {{ num_cases }}</p>
+
+        {% if user.is_authenticated %}
+            <p class="lead pl-2">Welcome to Trans-19, {{ user.get_username }}!</p>
+            <p class="ml-2">
+            <a class="btn btn-primary" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+            </p>
+        {% else %}
+            <p class="ml-2">
+                <a class="btn btn-primary" href="{% url 'login'%}?next={{request.path}}">Login</a>
+            </p>
+        {% endif %}
     </div>
 {% endblock %}

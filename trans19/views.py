@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
 from django.db import transaction
@@ -10,27 +12,32 @@ from datetime import timedelta
 
 
 def index(request):
-    context = {"index": "active"}
+    num_cases = Patient.objects.all().count()
+    context = {"num_cases": num_cases, "index": "active"}
     return render(request, 'trans19/index.html', context)
 
 
+@login_required
 def locations(request):
     latest_location_list = Location.objects.order_by('location_name')[:20]
     context = {'latest_location_list': latest_location_list, "location": "active"}
     return render(request, 'trans19/locations.html', context)
 
 
+@login_required
 def patients(request):
     latest_patient_list = Patient.objects.order_by('case_number')[:20]
     context = {'latest_patient_list': latest_patient_list, "patient": "active"}
     return render(request, 'trans19/patients.html', context)
 
 
+@login_required
 def detail(request, patient_id):
     patient = get_object_or_404(Patient, pk=patient_id)
     return render(request, 'trans19/detail.html', {'patient': patient})
 
 
+@login_required
 def location_new(request):
     if request.method == "POST":
         form = LocationForm(request.POST)
@@ -43,6 +50,7 @@ def location_new(request):
     return render(request, 'trans19/addLocation.html', {'form': form})
 
 
+@login_required
 def location_edit(request, pk):
     location = get_object_or_404(Location, pk=pk)
     if request.method == "POST":
@@ -56,13 +64,17 @@ def location_edit(request, pk):
     return render(request, 'trans19/addLocation.html', {'form': form})
 
 
-class LocationDelete(DeleteView):
+class LocationDelete(LoginRequiredMixin, DeleteView):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     model = Location
     template_name = 'trans19/deleteLocation.html'
     success_url = reverse_lazy('trans19:locations')
 
 
-class PatientCreate(CreateView):
+class PatientCreate(LoginRequiredMixin, CreateView):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     model = Patient
     template_name = 'trans19/addPatient.html'
     form_class = PatientForm
@@ -91,7 +103,9 @@ class PatientCreate(CreateView):
         return reverse_lazy('trans19:patients')
 
 
-class PatientUpdate(UpdateView):
+class PatientUpdate(LoginRequiredMixin, UpdateView):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     model = Patient
     template_name = 'trans19/addPatient.html'
     form_class = PatientForm
@@ -119,12 +133,20 @@ class PatientUpdate(UpdateView):
         return reverse_lazy('trans19:patients')
 
 
-class PatientDelete(DeleteView):
+class PatientDelete(LoginRequiredMixin, DeleteView):
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     model = Patient
     template_name = 'trans19/deletePatient.html'
     success_url = reverse_lazy('trans19:patients')
 
 
+def is_epidemiologists(user):
+    return user.groups.filter(name='Epidemiologists').exists()
+
+
+@login_required
+@user_passes_test(is_epidemiologists)
 def connections(request):
     patient_case = request.GET.get('case_number')
     time_window = request.GET.get('time_window')
