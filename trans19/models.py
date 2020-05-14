@@ -14,7 +14,36 @@ class Patient(models.Model):
 
 class Location(models.Model):
     location_name = models.CharField(max_length=200)
-    district = models.CharField(max_length=200)
+    DISTRICT_CHOICES = [
+        ('Hong Kong Island', (
+            ('Central and Western', 'Central and Western'),
+            ('Eastern', 'Eastern'),
+            ('Southern', 'Southern'),
+            ('Wan Chai', 'Wan Chai'),
+        )
+         ),
+        ('Kowloon', (
+            ('Sham Shui Po', 'Sham Shui Po'),
+            ('Kowloon City', 'Kowloon City'),
+            ('Kwun Tong', 'Kwun Tong'),
+            ('Wong Tai Sin', 'Wong Tai Sin'),
+            ('Yau Tsim Mong', 'Yau Tsim Mong'),
+        )
+         ),
+        ('New Teritories', (
+            ('Islands', 'Islands'),
+            ('Kwai Tsing', 'Kwai Tsing'),
+            ('North', 'North'),
+            ('Sai Kung', 'Sai Kung'),
+            ('Sha Tin', 'Sha Tin'),
+            ('Tai Po', 'Tai Po'),
+            ('Tsuen Wan', 'Tsuen Wan'),
+            ('Tuen Mun', 'Tuen Mun'),
+            ('Yuen Long', 'Yuen Long'),
+        )
+         ),
+    ]
+    district = models.CharField(max_length=200, choices=DISTRICT_CHOICES)
     address = models.CharField(max_length=200)
     x_coord = models.IntegerField()
     y_coord = models.IntegerField()

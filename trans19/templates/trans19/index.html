@@ -8,7 +8,7 @@
         {% if user.is_authenticated %}
             <p class="lead pl-2">Welcome to Trans-19, {{ user.get_username }}!</p>
             <p class="ml-2">
-            <a class="btn btn-primary" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+            <a class="btn btn-danger" href="{% url 'logout'%}?next={{request.path}}">Logout</a>
             </p>
         {% else %}
             <p class="ml-2">
