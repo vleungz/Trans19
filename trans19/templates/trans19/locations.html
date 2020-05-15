@@ -2,6 +2,7 @@
 {% block content %}
     <h2 class="text-center mt-5">Location Record</h2>
     <div class="table-responsive w-75 mx-auto mb-5">
+        {%  if latest_location_list %}
     <table class="table table-bordered mt-3">
         <thead class="thead-light">
             <tr>
@@ -29,5 +30,8 @@
             {% endfor %}
         </tbody>
     </table>
+     {%  else %}
+        <p class="lead text-center mt-5">No locations are available.</p>
+    {%  endif %}
     </div>
 {% endblock %}
