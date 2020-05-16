@@ -5,6 +5,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit
 from .custom_layout_object import *
 
+import datetime
+
 
 class LocationForm(forms.ModelForm):
     class Meta:
@@ -25,6 +27,21 @@ class VisitForm(forms.ModelForm):
             'date_to': DateInput(),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        date_from = cleaned_data.get("date_from")
+        date_to = cleaned_data.get("date_to")
+        if date_from and date_to:
+            if date_from > datetime.date.today():
+                msg = "The date cannot be in the future!"
+                self.add_error('date_from', msg)
+            if date_to > datetime.date.today():
+                msg = "The date cannot be in the future!"
+                self.add_error('date_to', msg)
+            if date_from > date_to:
+                msg = "The date to cannot be earlier than the date from!"
+                self.add_error('date_to', msg)
+
 
 PatientFormSet = inlineformset_factory(
     Patient,
@@ -36,7 +53,6 @@ PatientFormSet = inlineformset_factory(
 
 
 class PatientForm(forms.ModelForm):
-
     class Meta:
         model = Patient
         exclude = ()
@@ -44,6 +60,17 @@ class PatientForm(forms.ModelForm):
             'date_case_confirmed': DateInput(),
             'date_of_birth': DateInput(),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_case = cleaned_data.get("date_case_confirmed")
+        if date_case > datetime.date.today():
+            msg = "The date cannot be in the future!"
+            self.add_error('date_case_confirmed', msg)
+        date_birth = cleaned_data.get("date_of_birth")
+        if date_birth > datetime.date.today():
+            msg = "The date cannot be in the future!"
+            self.add_error('date_of_birth', msg)
 
     def __init__(self, *args, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
@@ -60,7 +87,7 @@ class PatientForm(forms.ModelForm):
                 Field('date_case_confirmed'),
                 Field('case_number'),
                 Fieldset('Add Visits',
-                        Formset('visits')),
+                    Formset('visits')),
                 HTML("<br>"),
                 ButtonHolder(Submit('submit', 'Save')),
                 )
