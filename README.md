@@ -1,7 +1,7 @@
 # Trans19
 
 ## Introduction
-Trans-19 was developed to manage records of patients affected by COVID-19 and their visited locations. It allows users to enter, edit and delete records, search through them and view the data in table format. CHP staff logs in using their username and password, then, according to their status, access different functions of the system. They can manage their accounts and change password if needed.
+Trans-19 was developed to manage records of patients affected by COVID-19 and their visited locations. It allows users to enter, edit and delete records, search through them and view the data in table format. CHP staff logs in using their username and password, then, according to their status, access different functions of the system. Staff identified as Epidemiologists are able to identify connections between patients for the purpose of contact tracing. 
 
 ## Usage
 - Change into project directory
